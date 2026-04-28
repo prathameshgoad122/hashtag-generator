@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 Hashtag Generator Pro - Login & History</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        /* LOGIN SCREEN */
+        .login-screen {
+            padding: 60px 40px;
+            text-align: center;
+        }
+        
+        .login-screen h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .login-input {
+            width: 100%;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 15px;
+            font-size: 18px;
+            text-align: center;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102,126,234,0.4);
+        }
+        
+        /* MAIN APP */
+        .main-app {
+            display: none;
+            padding: 40px;
+        }
+        
+        .user-info {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        /* GENERATOR */
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 20px;
+            border: 3px solid #e1e5e9;
+            border-radius: 15px;
+            font-size: 16px;
+            resize: vertical;
+            margin-bottom: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        select {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            min-width: 150px;
+            background: white;
+        }
+        
+        .generate-btn {
+            width: 100%;
+            padding: 25px;
+            background: linear-gradient(45deg, #ff6b6b, #ffa500);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+        
+        .generate-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        /* HISTORY */
+        .history-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 3px solid #eee;
+        }
+        
+        .history-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .history-item:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .history-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .history-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .history-tag {
+            background: #667eea;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        
+        /* HASHTAGS */
+        .hashtags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 25px;
+            background: linear-gradient(135deg, #f0f2ff 0%, #e8f0ff 100%);
+            border-radius: 20px;
+            min-height: 120px;
+            margin-bottom: 20px;
+        }
+        
+        .hashtag {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .hashtag:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 20px rgba(102,126,234,0.4);
+        }
+        
+        .export-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+        }
+        
+        .export-btn {
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 15px;
+        }
+        
+        .copy-all { background: #28a745; color: white; }
+        .download { background: #007bff; color: white; }
+        .save-history { background: #ffc107; color: #333; }
+        
+        @media (max-width: 600px) {
+            .controls { flex-direction: column; }
+            .export-buttons { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN SCREEN -->
+    <div class="container" id="loginContainer">
+        <div class="login-screen">
+            <h1>🔐 Login Required</h1>
+            <p style="color:#666;margin-bottom:30px;">Login to save your hashtag history</p>
+            <div class="login-form">
+                <input type="text" class="login-input" id="username" placeholder="Your Name" maxlength="20">
+                <button class="login-btn" onclick="login()">🚀 Enter App</button>
+                <p style="margin-top:20px;color:#999;font-size:14px;">
+                    Demo: Use any name like "John" or "User"
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div class="container main-app" id="mainApp">
+        <div class="user-info">
+            <h2>Welcome back, <span id="currentUser">-</span>! 👋</h2>
+            <p>You have <span id="historyCount">0</span> saved generations</p>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <h2>🎯 Generate Hashtags</h2>
+        <textarea id="inputText" placeholder="Type your post content..."></textarea>
+        
+        <div class="controls">
+            <select id="hashtagCount">
+                <option value="15">15 Hashtags</option>
+                <option value="25" selected>25 Hashtags</option>
+                <option value="35">35 Hashtags</option>
+                <option value="50">50 Hashtags</option>
+            </select>
+            <select id="hashtagStyle">
+                <option value="mixed">Mixed</option>
+                <option value="trending">Trending</option>
+                <option value="viral">Viral</option>
+                <option value="niche">Niche</option>
+            </select>
+        </div>
+        
+        <button class="generate-btn" onclick="generateHashtags()">🚀 GENERATE HASHTAGS</button>
+        
+        <div class="hashtags" id="hashtagsContainer">
+            <div style="text-align:center;color:#999;padding:50px;font-style:italic;">
+                Generate your first set of hashtags! ✨
+            </div>
+        </div>
+        
+        <div class="export-buttons">
+            <button class="export-btn copy-all" onclick="copyAll()">📋 Copy All</button>
+            <button class="export-btn download" onclick="downloadTxt()">💾 Download</button>
+            <button class="export-btn save-history" onclick="saveToHistory()">💾 Save History</button>
+        </div>
+
+        <!-- HISTORY SECTION -->
+        <div class="history-section">
+            <h2>📚 Your History (<span id="historyCountMain">0</span>)</h2>
+            <div id="historyList"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = '';
+        let currentHashtags = [];
+        let userHistory = JSON.parse(localStorage.getItem('hashtagHistory') || '{}');
+
+        // LOGIN
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            if (!username) {
+                alert('Please enter a username!');
+                return;
+            }
+            
+            currentUser = username;
+            document.getElementById('currentUser').textContent = username;
+            loadUserHistory();
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+        }
+
+        // LOGOUT
+        function logout() {
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('username').value = '';
+            currentUser = '';
+        }
+
+        // LOAD USER HISTORY
+        function loadUserHistory() {
+            const history = userHistory[currentUser] || [];
+            document.getElementById('historyCount').textContent = history.length;
+            document.getElementById('historyCountMain').textContent = history.length;
+            showHistory(history);
+        }
+
+        // SHOW HISTORY
+        function showHistory(history) {
+            const container = document.getElementById('historyList');
+            if (history.length === 0) {
+                container.innerHTML = '<p style="text-align:center;color:#999;padding:40px;">No history yet. Generate some hashtags!</p>';
+                return;
+            }
+            
+            container.innerHTML = history.map((item, index) => `
+                <div class="history-item" onclick="loadHistoryItem(${index})">
+                    <div class="history-title">${item.date} - ${item.input.substring(0, 50)}${item.input.length > 50 ? '...' : ''}</div>
+                    <div class="history-tags">${item.hashtags.slice(0, 8).map(tag => `<span class="history-tag">${tag}</span>`).join('')}</div>
+                </div>
+            `).join('');
+        }
+
+        // LOAD HISTORY ITEM
+        function loadHistoryItem(index) {
+            const history = userHistory[currentUser] || [];
+            const item = history[index];
+            document.getElementById('inputText').value = item.input;
+            currentHashtags = item.hashtags;
+            showHashtags(currentHashtags);
+            showStatus('📚 Loaded from history!', 'success');
+        }
+
+        // GENERATE HASHTAGS
+        function generateHashtags() {
+            const input = document.getElementById('inputText').value.trim();
+            const count = parseInt(document.getElementById('hashtagCount').value);
+            
+            if (!input) {
+                showStatus('Please enter text!', 'error');
+                return;
+            }
+            
+            document.getElementById('hashtagsContainer').innerHTML = '<div style="text-align:center;padding:40px;">Generating...</div>';
+            
+            setTimeout(() => {
+                currentHashtags = createHashtags(input, count);
+                showHashtags(currentHashtags);
+                showStatus(`Generated ${currentHashtags.length} hashtags!`, 'success');
+            }, 800);
+        }
+
+        // CREATE HASHTAGS
+        function createHashtags(text, count) {
+            const words = text.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+            let hashtags = [];
+            
+            words.slice(0, 8).forEach(word => {
+                hashtags.push('#' + word.charAt(0).toUpperCase() + word.slice(1));
+            });
+            
+            const extras = ['#Vibes', '#Love', '#Life', '#Trend', '#Hot', '#Now', '#Best', '#Real'];
+            hashtags = hashtags.concat(extras.slice(0, Math.floor(count * 0.3)));
+            
+            while (hashtags.length < count) {
+                hashtags.push('#Tag' + Math.floor(Math.random() * 999));
+            }
+            
+            return hashtags.slice(0, count).sort(() => Math.random() - 0.5);
+        }
+
+        // SHOW HASHTAGS
+        function showHashtags(hashtags) {
+            document.getElementById('hashtagsContainer').innerHTML = 
+                hashtags.map(tag => `<span class="hashtag" onclick="copySingle('${tag}')">${tag}</span>`).join('');
+        }
+
+        // COPY SINGLE
+        function copySingle(tag) {
+            navigator.clipboard.writeText(tag);
+            showStatus(tag + ' copied!', 'success');
+        }
+
+        // COPY ALL
+        function copyAll() {
+            const text = currentHashtags.join(' ');
+            navigator.clipboard.writeText(text);
+            showStatus('All copied!', 'success');
+        }
+
+        // DOWNLOAD
+        function downloadTxt() {
+            const text = currentHashtags.join('\n');
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'hashtags.txt';
+            a.click();
+            showStatus('Downloaded!', 'success');
+        }
+
+        // SAVE TO HISTORY
+        function saveToHistory() {
+            const input = document.getElementById('inputText').value.trim();
+            if (!input || currentHashtags.length === 0) {
+                showStatus('Generate hashtags first!', 'error');
+                return;
+            }
+            
+            if (!userHistory[currentUser]) userHistory[currentUser] = [];
+            
+            const newItem = {
+                date: new Date().toLocaleString(),
+                input: input,
+                hashtags: currentHashtags
+            };
+            
+            userHistory[currentUser].unshift(newItem);
+            userHistory[currentUser] = userHistory[currentUser].slice(0, 20); // Keep last 20
+            
+            localStorage.setItem('hashtagHistory', JSON.stringify(userHistory));
+            loadUserHistory();
+            showStatus('💾 Saved to history!', 'success');
+        }
+
+        // STATUS
+        function showStatus(message, type) {
+            const status = document.createElement('div');
+            status.className = `status ${type}`;
+            status.textContent = message;
+            document.querySelector('.main-app').appendChild(status);
+            setTimeout(() => status.remove(), 3000);
+        }
+
+        // ENTER KEY
+        document.getElementById('inputText').addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') generateHashtags();
+        });
+    </script>
+</body>
+</html>
